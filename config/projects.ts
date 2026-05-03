@@ -68,7 +68,7 @@ export interface ProjectInterface {
   // ── Core data ─────────────────────────────────────────────────────────
   techStack: ValidSkills[];
   startDate: Date;
-  endDate: Date;
+  endDate: Date | "Present";
   companyLogoImg: string;
   descriptionDetails: DescriptionDetails;
 
