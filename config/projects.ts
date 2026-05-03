@@ -9,8 +9,8 @@ export interface ProjectMetric {
 
 export interface ProjectVideo {
   type: "youtube" | "mp4";
-  /** YouTube video ID or path to local MP4 (H.264 fallback) */
-  src: string;
+  /** YouTube video ID or path to local MP4 (H.264 fallback). Optional for mp4 type if srcAv1 is set — AV1-only is fine for modern browsers. Required for youtube type. */
+  src?: string;
   /** AV1 version in MP4 container — served first to capable browsers */
   srcAv1?: string;
   /** Optional poster image shown before play */
@@ -26,6 +26,8 @@ interface DescriptionDetails {
 
 export interface ProjectInterface {
   id: string;
+  /** Controls display order in all project lists. Lower = first. Use multiples of 10. */
+  sortOrder?: number;
   type: ValidExpType;
   companyName: string;
   /** Short label for nav/ToC (falls back to companyName if omitted) */
@@ -68,7 +70,12 @@ export interface ProjectInterface {
   // ── Core data ─────────────────────────────────────────────────────────
   techStack: ValidSkills[];
   startDate: Date;
-  endDate: Date | "Present";
+  /**
+   * For ongoing projects use new Date("2026-12-01") — formatDateFromObj({ showPresent: true })
+   * renders any current/future date as "Present". When Dec 2026 arrives it will gracefully
+   * degrade to "Dec 2026". Revisit at year-end and push forward if still ongoing.
+   */
+  endDate: Date;
   companyLogoImg: string;
   descriptionDetails: DescriptionDetails;
 
@@ -85,8 +92,11 @@ export interface ProjectInterface {
 
 export const Projects: ProjectInterface[]
 
-export const featuredProjects = Projects.filter((p) => p.featured);
+const byOrder = (a: ProjectInterface, b: ProjectInterface) =>
+  (a.sortOrder ?? 999) - (b.sortOrder ?? 999)
+
+export const featuredProjects = Projects.filter((p) => p.featured).sort(byOrder)
 export const homepageProjects = Projects.filter(
   (p) => p.featured && p.showOnHomepage !== false
-);
-export const regularProjects = Projects.filter((p) => !p.featured);
+).sort(byOrder)
+export const regularProjects = Projects.filter((p) => !p.featured).sort(byOrder)

@@ -86,7 +86,7 @@ export default function VideoEmbed({ video, className = "" }: VideoEmbedProps) {
           {video.srcAv1 && (
             <source src={video.srcAv1} type='video/mp4; codecs="av01.0.05M.08"' />
           )}
-          <source src={video.src} type="video/mp4" />
+          {video.src && <source src={video.src} type="video/mp4" />}
         </video>
       </div>
     );
